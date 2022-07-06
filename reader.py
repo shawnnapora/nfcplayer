@@ -64,7 +64,7 @@ def get_on_connect(device):
     return on_connect
 
 
-signal.signal(signal.SIGINT, lambda _: sys.exit(0))
+signal.signal(signal.SIGINT, lambda _, __: sys.exit(0))
 
 print("Opening reader")
 with nfc.ContactlessFrontend('usb') as clf:
