@@ -65,8 +65,6 @@ def get_on_connect(device):
     return on_connect
 
 
-signal.signal(signal.SIGINT, lambda _, __: sys.exit(0))
-
 print("Opening reader")
 with nfc.ContactlessFrontend('usb') as clf:
     print(f"Opened reader {clf}")
@@ -74,6 +72,10 @@ with nfc.ContactlessFrontend('usb') as clf:
         'targets': ('106A',),
         'on-connect': get_on_connect(clf.device),
     }
+
+    # dumb/simple way to handle control-c, otherwise clf.connect doesn't respect control-c
+    signal.signal(signal.SIGINT, lambda _, __: sys.exit(0))
+
     print("Waiting for tags")
     while True:
         clf.connect(rdwr=rdwr_options)
