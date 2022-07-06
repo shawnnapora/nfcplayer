@@ -3,6 +3,7 @@
 import ndef
 import nfc
 import signal
+import sys
 import urihandlers
 
 from urllib.parse import urlparse
