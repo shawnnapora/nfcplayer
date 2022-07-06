@@ -2,6 +2,7 @@
 
 import ndef
 import nfc
+import signal
 import urihandlers
 
 from urllib.parse import urlparse
@@ -62,6 +63,8 @@ def get_on_connect(device):
         return tag
     return on_connect
 
+
+signal.signal(signal.SIGINT, lambda _: sys.exit(0))
 
 print("Opening reader")
 with nfc.ContactlessFrontend('usb') as clf:
