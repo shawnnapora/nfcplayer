@@ -26,11 +26,10 @@ class UriHandler:
         previous = None
         parsed_uris = []
         for uri in uris:
+            self.validate_uri(uri)
             parsed = urlparse(uri)
             if previous is not None and previous.scheme != parsed.scheme:
-                raise Exception(f"multiple schemes may not be used (found {parsed.scheme} and {previous.scheme}")
-            if parsed.scheme not in handlers:
-                raise Exception("provided scheme unsupported")
+                raise HandlerException(f"multiple schemes may not be used (found {parsed.scheme} and {previous.scheme}")
             previous = parsed
             parsed_uris.append(parsed)
         self.handlers[parsed.scheme].handle_uris(parsed_uris)
@@ -38,5 +37,9 @@ class UriHandler:
     def validate_uri(self, uri):
         parsed = urlparse(uri)
         if parsed.scheme not in handlers:
-            raise Exception(f"scheme {parsed.scheme} not in handlers: {repr(handlers.keys())}")
+            raise HandlerException(f"scheme {parsed.scheme} not in handlers: {repr(handlers.keys())}")
         self.handlers[parsed.scheme].validate_uri(parsed)
+
+
+class HandlerException(Exception):
+    pass

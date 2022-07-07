@@ -34,7 +34,6 @@ class TagReaderWriter:
                 raise TagException(
                     f"record {index} in tag was not {ndef.uri.UriRecord.__name__}, but was {type(record).__name__}")
             uri = record.uri
-            urihandler.validate_uri(uri)
             uris.append(uri)
         return uris
 
