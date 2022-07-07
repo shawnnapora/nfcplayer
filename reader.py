@@ -6,7 +6,7 @@ import signal
 import sys
 
 from urihandler import UriHandler
-from tagreaderwriter import TagReaderWriter
+from tagreaderwriter import TagReaderWriter, TagException
 
 urihandler = UriHandler("config.yaml")
 tagreaderwriter = TagReaderWriter()
