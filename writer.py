@@ -1,27 +1,14 @@
-#!./venv/bin/python
+#!/usr/bin/env python
 
 import nfc
 import ndef
 import sys
-import urihandler
+from urihandler import UriHandler
+from tagreaderwriter import TagReaderWriter
 
 
-def write_tag(tag, new_records):
-    if tag.ndef is None:
-        print("This is not an NDEF Tag.")
-        return
-
-    if not tag.ndef.is_writeable:
-        print("This Tag is not writeable.")
-        return
-
-    message_length = sum([len(r) for r in ndef.message.message_encoder(new_records)])
-    if message_length > tag.ndef.capacity:
-        print("The new tag data exceeds the Tag's capacity.")
-        return
-
-    tag.ndef.records = new_records
-
+urihandler = UriHandler("config.yaml")
+tagreaderwriter = TagReaderWriter()
 
 records = []
 for arg in sys.argv[1:]:
@@ -34,7 +21,7 @@ if len(records) == 0:
 with nfc.ContactlessFrontend('usb') as clf:
     rdwr_options = {
         'targets': ('106A',),
-        'on-connect': lambda tag: write_tag(tag, records),
+        'on-connect': lambda tag: tagreaderwriter.write_tag(tag, records),
     }
     clf.connect(rdwr=rdwr_options)
     print(f"loaded tag with records: {repr(records)}")

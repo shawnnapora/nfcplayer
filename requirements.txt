@@ -3,3 +3,4 @@ ndeflib==0.3.3
 nfcpy==1.0.3
 pyDes==2.0.1
 pyserial==3.5
+PyYAML==6.0
