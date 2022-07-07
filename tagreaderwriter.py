@@ -22,15 +22,19 @@ class TagReaderWriter:
     @staticmethod
     def get_uris(tag):
         if not tag.ndef:
-            raise Exception("received empty ndef")
+            raise TagException("received empty ndef")
         if len(tag.ndef.records) == 0:
-            raise Exception("received tag with 0 records")
+            raise TagException("received tag with 0 records")
         uris = []
         for index, record in enumerate(tag.ndef.records):
             if not isinstance(record, ndef.uri.UriRecord):
-                raise Exception(
+                raise TagException(
                     f"record {index} in tag was not {ndef.uri.UriRecord.__name__}, but was {type(record).__name__}")
             uri = record.uri
             urihandler.validate_uri(uri)
             uris.append(uri)
         return uris
+
+
+class TagException(Exception):
+    pass

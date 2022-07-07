@@ -20,7 +20,7 @@ with nfc.ContactlessFrontend('usb') as clf:
             uris = tagreaderwriter.get_uris(tag)
             print(f"playing {repr(uris)}")
             urihandler.handle_uris(uris)
-        except Exception as e:
+        except TagException as e:
             # invalid tag, beep now in addition to default to indicate error.
             print(e)
             clf.device.turn_on_led_and_buzzer()
