@@ -36,8 +36,8 @@ class UriHandler:
 
     def validate_uri(self, uri):
         parsed = urlparse(uri)
-        if parsed.scheme not in handlers:
-            raise HandlerException(f"scheme {parsed.scheme} not in handlers: {repr(handlers.keys())}")
+        if parsed.scheme not in self.handlers:
+            raise HandlerException(f"scheme {parsed.scheme} not in handlers: {repr(self.handlers.keys())}")
         self.handlers[parsed.scheme].validate_uri(parsed)
 
 
