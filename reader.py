@@ -1,45 +1,39 @@
-#!/home/multimedia/Desktop/reader/venv/bin/python
+#!/usr/bin/env python
 
 import ndef
 import nfc
-import urihandler
+import signal
+import sys
 
+from urihandler import UriHandler, HandlerException
+from tagreaderwriter import TagReaderWriter, TagException
 
-def get_uris(tag):
-    if not tag.ndef:
-        raise Exception("received empty ndef")
-    if len(tag.ndef.records) == 0:
-        raise Exception(f"received tag with 0 records")
-    uris = []
-    for index, record in enumerate(tag.ndef.records):
-        if not isinstance(record, ndef.uri.UriRecord):
-            raise Exception(f"record {index} in tag was not {ndef.uri.UriRecord.__name__}, but was {type(record).__name__}")
-        uri = record.uri
-        urihandler.validate_uri(uri)
-        uris.append(uri)
-    return uris
-
-def get_on_connect(device):
-    def on_connect(tag):
-        try:
-            uris = get_uris(tag)
-            print(f"playing {repr(uris)}")
-            urihandler.handle_uris(uris)
-        except Exception as e:
-            # invalid tag, beep now in addition to default to indicate error.
-            print(e)
-            device.turn_on_led_and_buzzer()
-        return tag
-    return on_connect
-
+urihandler = UriHandler("config.yaml")
+tagreaderwriter = TagReaderWriter()
 
 print("Opening reader")
 with nfc.ContactlessFrontend('usb') as clf:
     print(f"Opened reader {clf}")
+
+    def on_connect(tag):
+        try:
+            uris = tagreaderwriter.get_uris(tag)
+            print(f"playing {repr(uris)}")
+            urihandler.handle_uris(uris)
+        except (TagException, HandlerException) as e:
+            # invalid tag, beep now in addition to default to indicate error.
+            print(e)
+            clf.device.turn_on_led_and_buzzer()
+        return tag
+
     rdwr_options = {
         'targets': ('106A',),
-        'on-connect': get_on_connect(clf.device),
+        'on-connect': on_connect,
     }
+
+    # dumb/simple way to handle control-c, otherwise clf.connect doesn't respect control-c
+    signal.signal(signal.SIGINT, lambda _, __: sys.exit(0))
+
     print("Waiting for tags")
     while True:
         clf.connect(rdwr=rdwr_options)
