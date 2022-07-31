@@ -1,4 +1,6 @@
 #!/bin/bash
+# wrapper script to allow running of the reader by OS startup and other processes
+# that are not going to activate the python venv themselves.
 
 SCRIPTDIR=$(dirname "$0")
 pushd $SCRIPTDIR

@@ -32,9 +32,7 @@ class AlbumHandler:
 
     @staticmethod
     def _play(album_paths):
-        # strawberry is nice that it will run normally if not running, or if running
-        # it acts as a remote for itself and promptly exits. So, we can just fire this
-        # and forget about it. If this process exits, strawberry will continue running.
+        # todo: daemonize strawberry so that it survives reader.py exiting
         invocation = ["strawberry", "-p", "-l"] + album_paths
         subprocess.Popen(invocation, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 

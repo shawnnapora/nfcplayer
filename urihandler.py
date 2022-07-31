@@ -1,7 +1,8 @@
 import inspect
-import urihandlers
 import yaml
 from urllib.parse import urlparse
+
+import urihandlers
 
 
 class UriHandler:
